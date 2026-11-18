@@ -1,0 +1,29 @@
+:root{
+  --forest:#0F2B24; --forest-2:#15372E; --forest-3:#1E473B;
+  --chalk:#ECEDE8; --chalk-2:#E0E3DB; --paper:#F7F8F4;
+  --iron:#1C2421; --moss:#A3B5AA; --iron-soft:#56625C;
+  --brass:#C9A45C; --brass-2:#E3C483;
+  --d:'Big Shoulders Display'; --b:'Instrument Sans';
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow:hidden}
+body{position:relative;font-family:var(--b);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.post{width:1080px;height:1350px}
+.story{width:1080px;height:1920px}
+.dark{background:var(--forest);color:var(--chalk)}
+.light{background:var(--chalk);color:var(--iron)}
+.d{font-family:var(--d)}
+.ring{display:block}
+/* barbell knurling, the club's texture */
+.knurl{background:
+  repeating-linear-gradient(45deg,rgba(15,43,36,.38) 0 2px,transparent 2px 11px),
+  repeating-linear-gradient(-45deg,rgba(15,43,36,.38) 0 2px,transparent 2px 11px),var(--brass)}
+.knurl.on-light{background:
+  repeating-linear-gradient(45deg,rgba(15,43,36,.5) 0 2px,transparent 2px 11px),
+  repeating-linear-gradient(-45deg,rgba(15,43,36,.5) 0 2px,transparent 2px 11px),var(--chalk-2)}
+.brandbar{display:flex;align-items:center;gap:18px}
+.brandbar .ring{width:58px;height:58px}
+.brandbar .wm{font-family:var(--d);font-weight:900;font-size:46px;letter-spacing:.14em;line-height:1}
+.brandbar .tag{margin-left:auto;font-size:26px;font-weight:600}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.week span{display:grid;place-items:center;height:58px;border-radius:6px;font-weight:700;font-size:24px}

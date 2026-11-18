@@ -1,0 +1,1035 @@
+<title>Mettle Strength Club</title>
+<meta name="description" content="Concept demo of a fictional strength and conditioning club: browse programmes and price a membership. Designed and built by Bhavya Sharma.">
+<style>
+/*@@FONTS@@*/
+/* Layout: dark forest-green club pages alternating with chalk programme pages; everything left-aligned on a 1200px column */
+:root{
+  --forest:#0F2B24; --forest-2:#15372E; --forest-3:#1E473B;
+  --chalk:#ECEDE8; --chalk-2:#E0E3DB; --paper:#F7F8F4;
+  --iron:#1C2421; --moss:#A3B5AA; --iron-soft:#56625C;
+  --brass:#C9A45C; --brass-2:#E3C483;
+  --line-d:rgba(236,237,232,.16); --line-l:rgba(28,36,33,.16);
+  --display:'Big Shoulders Display','Arial Narrow',Impact,sans-serif;
+  --body:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
+  --r:6px;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition-duration:0s!important;animation-duration:0s!important}}
+body{margin:0;background:var(--forest);color:var(--chalk);font-family:var(--body);font-size:16px;line-height:1.55;font-variant-numeric:tabular-nums}
+body.modal-open{overflow:hidden}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+.light :focus-visible{outline-color:var(--forest)}
+.wrap{width:min(1200px,100%);margin-inline:auto;padding-inline:clamp(16px,4vw,40px)}
+h1,h2,h3{font-family:var(--display);font-weight:800;line-height:.92;margin:0;text-wrap:balance;letter-spacing:.005em}
+p{margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ico{width:1em;height:1em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5em;min-height:46px;padding:0 20px;border-radius:999px;border:1.5px solid transparent;font-weight:600;font-size:15px;text-decoration:none;cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .2s;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn-brass{background:var(--brass);color:var(--forest)}
+.btn-brass:hover{background:var(--brass-2)}
+.btn-ghost{border-color:var(--line-d);color:var(--chalk);background:transparent}
+.btn-ghost:hover{border-color:var(--chalk)}
+.btn-dark{background:var(--forest);color:var(--chalk)}
+.btn-dark:hover{background:var(--forest-3)}
+.btn-line{border-color:var(--line-l);color:var(--iron);background:transparent}
+.btn-line:hover{border-color:var(--iron)}
+.btn.small{min-height:40px;padding:0 16px;font-size:14px}
+.btn.wide{width:100%}
+
+/* demo bar */
+.demo-bar{background:var(--brass);color:var(--forest);font-size:13px;font-weight:600}
+.demo-bar .wrap{display:flex;gap:6px 16px;align-items:center;justify-content:space-between;padding-block:7px;flex-wrap:wrap}
+.demo-bar a{text-underline-offset:3px}
+
+/* header */
+.site{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:rgba(15,43,36,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line-d)}
+.site .bar{display:flex;align-items:center;gap:24px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--display);font-weight:900;font-size:26px;letter-spacing:.12em}
+.brand svg{width:28px;height:28px}
+.nav{display:flex;gap:22px;margin-left:auto;font-size:15px}
+.nav a{text-decoration:none;color:var(--moss);padding-block:6px}
+.nav a:hover{color:var(--chalk)}
+.menu-btn{display:none;margin-left:auto;background:none;border:1.5px solid var(--line-d);border-radius:999px;min-height:40px;padding:0 14px;cursor:pointer;font-weight:600;font-size:14px}
+@media (max-width:900px){
+  .site .bar{gap:12px}
+  .menu-btn{display:inline-flex;align-items:center}
+  .site .btn{display:none}
+  .nav{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:0;background:var(--forest-2);border-bottom:1px solid var(--line-d);padding:8px clamp(16px,4vw,40px) 16px}
+  .nav.open{display:flex}
+  .nav a{padding:12px 0;border-bottom:1px solid var(--line-d);color:var(--chalk);font-size:17px}
+}
+
+/* hero */
+.hero{padding-block:clamp(40px,7vw,96px) clamp(48px,7vw,96px)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(32px,5vw,72px);align-items:start}
+@media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+.kicker{color:var(--brass);font-weight:600;font-size:15px;margin-bottom:18px}
+.hero h1{font-size:clamp(64px,11vw,148px);font-weight:900;line-height:.84;letter-spacing:-.005em}
+.lede{font-size:clamp(17px,1.6vw,19px);color:var(--moss);max-width:34em;margin-top:24px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin:40px 0 0;border-top:1px solid var(--line-d);max-width:560px}
+.facts div{padding:14px 16px 0 0}
+.facts dt{font-size:13px;color:var(--moss)}
+.facts dd{margin:2px 0 0;font-family:var(--display);font-size:30px;font-weight:800;line-height:1}
+
+/* session card */
+.session{position:relative;background:var(--chalk);color:var(--iron);border-radius:var(--r);padding:28px 24px 22px;overflow:hidden}
+.knurl{position:absolute;inset:0 0 auto 0;height:14px;background:
+  repeating-linear-gradient(45deg,rgba(28,36,33,.32) 0 1px,transparent 1px 5px),
+  repeating-linear-gradient(-45deg,rgba(28,36,33,.32) 0 1px,transparent 1px 5px),var(--chalk-2)}
+.session header{margin-top:6px}
+.session .s-label{font-size:13px;color:var(--iron-soft);font-weight:600}
+.session h2{font-size:40px;margin-top:4px}
+.session .sub{font-size:14px;color:var(--iron-soft);margin-top:4px}
+.blocks{list-style:none;margin:18px 0 0;padding:0;border-top:1px solid var(--line-l)}
+.blocks li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:4px 10px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line-l)}
+.blocks .code{font-family:var(--display);font-weight:800;font-size:18px;color:var(--iron-soft)}
+.blocks .ex{font-weight:600;min-width:0}
+.blocks .rx{font-size:14px;color:var(--iron-soft);text-align:right}
+@media (max-width:420px){.blocks li{grid-template-columns:30px minmax(0,1fr)}.blocks .rx{grid-column:2;text-align:left}}
+.timer{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;margin-top:18px}
+.ring{position:relative;width:120px;height:120px}
+.ring svg{width:120px;height:120px;transform:rotate(-90deg)}
+.ring .track{stroke:var(--chalk-2);stroke-width:10;fill:none}
+.ring .prog{stroke:var(--forest);stroke-width:10;fill:none;stroke-linecap:round;transition:stroke .3s}
+.ring.done .prog{stroke:var(--brass)}
+.ring .t{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:34px}
+.timer-ctrl p{font-size:14px;color:var(--iron-soft)}
+@media (max-width:440px){.timer{grid-template-columns:96px minmax(0,1fr);gap:14px;align-items:start}.ring,.ring svg{width:96px;height:96px}.ring .t{font-size:28px}.presets{gap:4px;flex-wrap:nowrap}.presets button{flex:1 1 0;min-width:0;padding:5px 0}.timer-btns .btn.small{padding:0 13px}}
+.presets{display:flex;gap:6px;margin:10px 0 12px;flex-wrap:wrap}
+.presets button{min-height:40px;border:1.5px solid var(--line-l);background:transparent;border-radius:999px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer;color:var(--iron)}
+.presets button[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:var(--chalk)}
+.timer-btns{display:flex;gap:8px;flex-wrap:wrap}
+.rpe{margin-top:16px;font-size:14px;border-top:1px solid var(--line-l);padding-top:12px}
+.rpe summary{cursor:pointer;font-weight:600}
+.rpe p{margin-top:8px;color:var(--iron-soft)}
+
+/* sections */
+section{scroll-margin-top:72px}
+.light{background:var(--chalk);color:var(--iron)}
+.sec{padding-block:clamp(56px,8vw,112px)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px 48px;align-items:end;margin-bottom:36px}
+.sec-head h2{font-size:clamp(48px,7vw,96px);font-weight:900}
+.sec-head p{max-width:34em;font-size:17px}
+.light .sec-head p{color:var(--iron-soft)}
+.sec-head p.on-dark{color:var(--moss)}
+@media (max-width:760px){.sec-head{grid-template-columns:1fr}}
+
+/* filters */
+.filters{display:grid;gap:14px;padding:18px;background:var(--paper);border:1px solid var(--line-l);border-radius:var(--r)}
+.search{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line-l);border-radius:999px;padding:0 16px;background:#fff;min-height:48px}
+.search input{border:0;outline:0;background:transparent;width:100%;min-width:0;font-size:16px;color:var(--iron)}
+.search:focus-within{border-color:var(--forest)}
+.chips{border:0;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-width:0}
+.chips legend{float:left;font-size:13px;font-weight:600;color:var(--iron-soft);width:96px;padding:0}
+.chips button{min-height:42px;border:1.5px solid var(--line-l);background:transparent;border-radius:999px;padding:7px 15px;font-size:14px;font-weight:600;cursor:pointer;color:var(--iron)}
+.chips button:hover{border-color:var(--iron)}
+.chips button[aria-pressed="true"]{background:var(--forest);color:var(--chalk);border-color:var(--forest)}
+@media (max-width:640px){.chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.chips::-webkit-scrollbar{display:none}.chips legend{width:auto;margin-right:4px;flex:none}.chips button{flex:none}}
+.count{margin:22px 0 14px;font-size:14px;color:var(--iron-soft);font-weight:600}
+
+/* programme grid */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:1000px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.grid{grid-template-columns:1fr}}
+.prog{display:flex;flex-direction:column;gap:14px;background:var(--paper);border:1px solid var(--line-l);border-radius:var(--r);padding:22px 20px 20px;transition:border-color .2s}
+.prog:hover{border-color:rgba(28,36,33,.45)}
+.prog-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.prog h3{font-size:34px;font-weight:800}
+.lvl{flex:none;font-size:12px;font-weight:700;border:1.5px solid var(--line-l);border-radius:999px;padding:3px 10px;color:var(--iron-soft);margin-top:4px}
+.prog .blurb{color:var(--iron-soft);font-size:15px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.week span{display:grid;place-items:center;height:30px;border-radius:4px;background:var(--chalk-2);font-size:12px;font-weight:700;color:var(--iron-soft)}
+.week span.on{background:var(--forest);color:var(--chalk)}
+.week span.flex{background:repeating-linear-gradient(45deg,var(--chalk-2) 0 4px,#cfd4c9 4px 8px)}
+.spec{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin:0;padding-top:12px;border-top:1px solid var(--line-l)}
+.spec dt{font-size:12px;color:var(--iron-soft);font-weight:600}
+.spec dd{margin:1px 0 0;font-weight:600;font-size:15px}
+.bars{display:inline-flex;gap:3px;vertical-align:middle}
+.bars i{width:12px;height:12px;border-radius:2px;background:var(--chalk-2)}
+.bars i.on{background:var(--brass)}
+.prog-actions{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}
+.prog-actions .btn{flex:1 1 auto}
+.empty{padding:40px 0;display:grid;gap:12px;justify-items:start}
+
+/* dialog */
+dialog.sheet{border:0;padding:0;margin:0 0 0 auto;height:100%;max-height:100%;width:min(600px,100%);max-width:100%;background:var(--chalk);color:var(--iron);transform:translateX(30px);opacity:0;transition:transform .28s ease,opacity .28s ease}
+dialog.sheet.open{transform:none;opacity:1}
+dialog.sheet::backdrop{background:rgba(8,20,17,.62)}
+@media (max-width:640px){dialog.sheet{margin:auto 0 0 0;width:100%;height:auto;max-height:92vh;border-radius:14px 14px 0 0;transform:translateY(40px)}}
+.sheet-inner{padding:28px clamp(18px,4vw,36px) 32px;display:grid;gap:22px;align-content:start;min-height:100%}
+.sheet .close{position:sticky;top:0;justify-self:end;width:44px;height:44px;border-radius:999px;border:1.5px solid var(--line-l);background:var(--chalk);cursor:pointer;display:grid;place-items:center;z-index:2}
+.pd-meta{display:flex;gap:8px;flex-wrap:wrap}
+.pd-meta span{font-size:13px;font-weight:700;border:1.5px solid var(--line-l);border-radius:999px;padding:4px 11px;color:var(--iron-soft)}
+.sheet h2{font-size:clamp(44px,8vw,64px);font-weight:900;margin-top:-6px}
+.sheet h3{font-size:24px;margin-bottom:10px}
+.pd-blurb{font-size:17px;color:var(--iron-soft)}
+.pd-two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media (max-width:640px){.pd-two{grid-template-columns:1fr}}
+.ticks{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:15px}
+.ticks li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px}
+.ticks svg{color:var(--forest);margin-top:4px}
+.pd-week{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:15px}
+.pd-week li{display:grid;grid-template-columns:48px minmax(0,1fr);gap:8px;padding-bottom:6px;border-bottom:1px solid var(--line-l)}
+.pd-week b{font-family:var(--display);font-size:18px}
+.times{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
+.times li{background:var(--paper);border:1px solid var(--line-l);border-radius:4px;padding:6px 10px;font-size:14px;font-weight:600}
+.pd-coach{font-size:15px;color:var(--iron-soft);margin-top:10px}
+.pd-actions{display:flex;gap:10px;flex-wrap:wrap;padding-top:6px}
+
+/* timetable */
+.tt-controls{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.tt-tabs{display:none;gap:6px;overflow-x:auto;scrollbar-width:none}
+.tt-tabs::-webkit-scrollbar{display:none}
+.tt-tabs button{flex:none;min-height:42px;border:1.5px solid var(--line-d);background:transparent;border-radius:999px;padding:8px 15px;font-weight:700;font-size:14px;cursor:pointer}
+.tt-tabs button[aria-selected="true"]{background:var(--brass);border-color:var(--brass);color:var(--forest)}
+.field-inline{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--moss)}
+select{appearance:none;-webkit-appearance:none;border:1.5px solid var(--line-d);background:var(--forest-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23A3B5AA' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 14px center;border-radius:999px;min-height:42px;padding:0 38px 0 16px;font-size:15px;color:var(--chalk);max-width:100%}
+.week-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.tt-day h3{font-size:22px;padding-bottom:8px;border-bottom:1px solid var(--line-d);margin-bottom:8px}
+.tt-day h3 small{font-family:var(--body);font-weight:500;font-size:13px;color:var(--moss);margin-left:6px}
+.tt-day ol{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.slot{background:var(--forest-2);border:1px solid var(--line-d);border-radius:4px;padding:9px 10px;display:grid;gap:2px;transition:opacity .2s,border-color .2s}
+.slot .tm{font-family:var(--display);font-weight:800;font-size:20px;line-height:1}
+.slot .nm{font-weight:600;font-size:13.5px;line-height:1.25}
+.slot .cm{font-size:12.5px;color:var(--moss)}
+.slot.dim{opacity:.28}
+.slot.hit{border-color:var(--brass)}
+.tt-empty{font-size:13px;color:var(--moss);padding:6px 0}
+@media (max-width:980px){
+  .tt-tabs{display:flex}
+  .week-grid{grid-template-columns:1fr}
+  .tt-day{display:none}
+  .tt-day.active{display:block}
+  .tt-day h3{display:none}
+  .tt-day ol{gap:8px}
+  .slot{grid-template-columns:72px minmax(0,1fr);align-items:center;padding:12px 14px}
+  .slot .tm{grid-row:span 2;font-size:24px}
+  .slot.dim{display:none}
+}
+
+/* membership */
+.mem{background:var(--forest-2)}
+.mem-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);gap:28px;align-items:start}
+@media (max-width:980px){.mem-grid{grid-template-columns:1fr}}
+.step{border:0;margin:0;padding:22px 0;border-top:1px solid var(--line-d);min-width:0}
+.step legend{float:left;width:100%;display:flex;align-items:baseline;gap:12px;font-family:var(--display);font-weight:800;font-size:28px;margin-bottom:14px;padding:0}
+.step legend .n{font-size:18px;color:var(--brass);width:22px}
+.step .hint{clear:both;font-size:14px;color:var(--moss);margin-top:10px}
+.step select{width:100%;clear:both}
+.opts{clear:both;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.opts.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.opts.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:560px){.opts.four{grid-template-columns:repeat(2,minmax(0,1fr))}.opts.three{grid-template-columns:1fr}}
+.opt{position:relative;display:block;cursor:pointer}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt .box{display:grid;gap:2px;height:100%;border:1.5px solid var(--line-d);border-radius:var(--r);padding:12px 14px;transition:border-color .2s,background .2s}
+.opt .box b{font-weight:600}
+.opt .box small{font-size:13px;color:var(--moss)}
+.opt:hover .box{border-color:rgba(236,237,232,.4)}
+.opt input:checked + .box{border-color:var(--brass);background:rgba(201,164,92,.1)}
+.opt input:focus-visible + .box{outline:2px solid var(--brass);outline-offset:2px}
+.opt input:disabled + .box{opacity:.35;cursor:not-allowed}
+.opt.check .box{grid-template-columns:22px minmax(0,1fr) auto;align-items:center;gap:10px}
+.opt.check .tick{width:20px;height:20px;border:1.5px solid var(--line-d);border-radius:4px;display:grid;place-items:center}
+.opt.check .tick svg{opacity:0;color:var(--forest)}
+.opt.check input:checked + .box .tick{background:var(--brass);border-color:var(--brass)}
+.opt.check input:checked + .box .tick svg{opacity:1}
+.opt.check .amt{font-size:14px;color:var(--moss);font-weight:600}
+.summary{scroll-margin-top:84px;position:sticky;top:88px;background:var(--chalk);color:var(--iron);border-radius:var(--r);padding:24px 22px;display:grid;gap:14px}
+@media (max-width:980px){.summary{position:static}}
+.summary .s-label{font-size:13px;font-weight:700;color:var(--iron-soft)}
+.summary h3{font-size:30px}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price .big{font-family:var(--display);font-weight:900;font-size:68px;line-height:.9}
+.price .per{font-size:15px;color:var(--iron-soft);font-weight:600}
+.lines{margin:0;display:grid;gap:6px;font-size:14.5px;border-top:1px solid var(--line-l);padding-top:12px}
+.lines div{display:flex;justify-content:space-between;gap:12px}
+.lines dt{color:var(--iron-soft)}
+.lines dd{margin:0;font-weight:600;text-align:right}
+.lines .neg dd{color:#2E6B4E}
+.lines .tot{border-top:1px solid var(--line-l);padding-top:8px;margin-top:2px}
+.lines .tot dt,.lines .tot dd{color:var(--iron);font-weight:700}
+.incl{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:14px}
+.incl li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:8px}
+.incl svg{margin-top:4px;color:var(--forest)}
+.note{font-size:12.5px;color:var(--iron-soft)}
+.form{display:grid;gap:10px}
+.form label{display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--iron-soft)}
+.form input,.form select.l{min-height:46px;border:1.5px solid var(--line-l);border-radius:var(--r);padding:0 12px;background:#fff;color:var(--iron);font-size:16px}
+.form select.l{border-radius:var(--r);background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2356625C' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 14px center;padding-right:36px}
+.form input:focus,.form select.l:focus{outline:2px solid var(--forest);outline-offset:1px;border-color:var(--forest)}
+.form .err{color:#9B2C2C;font-size:13px;font-weight:600;min-height:1em}
+.form input[aria-invalid="true"]{border-color:#9B2C2C}
+.done{border:1.5px dashed var(--iron-soft);border-radius:var(--r);padding:16px;display:grid;gap:8px;font-size:14.5px}
+.done strong{font-family:var(--display);font-size:24px;line-height:1}
+.mem-bar{position:fixed;left:0;right:0;bottom:0;z-index:25;background:var(--chalk);color:var(--iron);border-top:1px solid var(--line-l);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));display:none;align-items:center;justify-content:space-between;gap:12px;transform:translateY(110%);transition:transform .25s}
+.mem-bar.show{transform:none}
+.mem-bar b{font-family:var(--display);font-size:28px;font-weight:900;line-height:1}
+.mem-bar span{font-size:13px;color:var(--iron-soft);display:block}
+@media (max-width:980px){.mem-bar{display:flex}}
+
+/* coaches */
+.coaches{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:1000px){.coaches{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.coaches{grid-template-columns:1fr}}
+.coach{border-top:2px solid var(--iron);padding-top:16px;display:grid;gap:8px;align-content:start}
+.mono{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:24px;letter-spacing:.04em;background:var(--forest);color:var(--brass);box-shadow:inset 0 0 0 6px var(--forest),inset 0 0 0 8px var(--brass)}
+.coach h3{font-size:30px}
+.coach .role{font-weight:700;font-size:14px;color:var(--iron-soft)}
+.coach p{font-size:15px}
+.coach .runs{font-size:13.5px;color:var(--iron-soft)}
+
+/* visit */
+.visit-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,64px);align-items:start}
+@media (max-width:900px){.visit-grid{grid-template-columns:1fr}}
+.visit-grid h2{font-size:clamp(48px,7vw,96px);font-weight:900;margin-bottom:24px}
+.hours{width:100%;border-collapse:collapse;font-size:16px;margin-bottom:32px}
+.hours th{text-align:left;font-weight:500;color:var(--moss);padding:10px 0;border-bottom:1px solid var(--line-d)}
+.hours td{text-align:right;font-weight:600;padding:10px 0;border-bottom:1px solid var(--line-d)}
+.visit-grid h3{font-size:30px;margin-bottom:14px}
+.first{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:f}
+.first li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;counter-increment:f}
+.first li::before{content:counter(f);font-family:var(--display);font-weight:900;font-size:30px;line-height:1;color:var(--brass)}
+.first b{display:block}
+.first span{color:var(--moss);font-size:15px}
+.trial{background:var(--chalk);color:var(--iron);border-radius:var(--r);padding:26px 22px;display:grid;gap:14px}
+.trial h3{font-size:34px;margin:0}
+.trial > p{color:var(--iron-soft);font-size:15px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.two{grid-template-columns:1fr}}
+.faq{margin-top:clamp(48px,7vw,80px)}
+.faq h3{font-size:34px;margin-bottom:12px}
+.faq details{border-bottom:1px solid var(--line-d)}
+.faq summary{cursor:pointer;padding:16px 0;font-weight:600;font-size:17px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-family:var(--display);font-size:26px;line-height:.8;color:var(--brass)}
+.faq details[open] summary::after{content:"\2212"}
+.faq details p{padding:0 0 18px;color:var(--moss);max-width:44em}
+
+/* footer */
+.foot{border-top:1px solid var(--line-d);padding-block:40px 56px;font-size:14px;color:var(--moss)}
+.foot .wrap{display:grid;gap:14px}
+.foot .brand{color:var(--chalk);font-size:22px}
+.foot p{max-width:60em}
+@media (max-width:980px){.foot{padding-bottom:96px}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M8 16L16 8M10 8h6v6"/></symbol>
+</svg>
+
+<div class="demo-bar">
+  <div class="wrap">
+    <span>Concept demo of a fictional studio. Nothing on this site books, sells or sends anything.</span>
+    <a id="maker-link" href="{{PORTFOLIO_URL}}" target="_blank" rel="noopener">Designed and built by Bhavya Sharma</a>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="#top" aria-label="Mettle, back to top">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="#C9A45C" stroke-width="3"/><circle cx="16" cy="16" r="8" fill="none" stroke="#C9A45C" stroke-width="2"/><circle cx="16" cy="16" r="2.6" fill="#C9A45C"/></svg>
+      <span>METTLE</span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#programmes">Programmes</a>
+      <a href="#timetable">Timetable</a>
+      <a href="#membership">Membership</a>
+      <a href="#coaches">Coaches</a>
+      <a href="#visit">Visit</a>
+    </nav>
+    <a class="btn btn-brass small" href="#visit">Book a free trial</a>
+    <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="kicker">Strength and conditioning club</p>
+      <h1>Strength is a practice.</h1>
+      <p class="lede">Small-group strength training, coached by people who watch every rep. Programmes run in six-week blocks and every session is logged, so you can see yourself getting stronger.</p>
+      <div class="cta-row">
+        <a class="btn btn-brass" href="#programmes">Find your programme</a>
+        <a class="btn btn-ghost" href="#membership">Price a membership</a>
+      </div>
+      <dl class="facts">
+        <div><dt>Members per coach</dt><dd>8 max</dd></div>
+        <div><dt>Programme block</dt><dd>6 weeks</dd></div>
+        <div><dt>Open weekdays</dt><dd>6–22</dd></div>
+      </dl>
+    </div>
+
+    <aside class="session" aria-labelledby="session-title">
+      <div class="knurl" aria-hidden="true"></div>
+      <header>
+        <p class="s-label">Today on the floor</p>
+        <h2 id="session-title">Barbell Strength</h2>
+        <p class="sub">Block 3, week 4, day 2</p>
+      </header>
+      <ol class="blocks">
+        <li><span class="code">A1</span><span class="ex">Back squat</span><span class="rx">5 × 3 @ RPE 8</span></li>
+        <li><span class="code">A2</span><span class="ex">Pull-up</span><span class="rx">5 × 5, tempo 3-1-1-0</span></li>
+        <li><span class="code">B1</span><span class="ex">Romanian deadlift</span><span class="rx">3 × 8 @ RPE 7</span></li>
+        <li><span class="code">B2</span><span class="ex">Half-kneeling press</span><span class="rx">3 × 10 each side</span></li>
+        <li><span class="code">C</span><span class="ex">Finisher</span><span class="rx">EMOM 10: 12 cal row + 8 swings</span></li>
+      </ol>
+      <div class="timer">
+        <div class="ring" id="ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="track" cx="60" cy="60" r="52"/><circle class="prog" id="ring-prog" cx="60" cy="60" r="52" stroke-dasharray="326.73" stroke-dashoffset="0"/></svg>
+          <span class="t" id="ring-t" aria-hidden="true">2:30</span>
+        </div>
+        <div class="timer-ctrl">
+          <p>Rest between squat sets</p>
+          <div class="presets" role="group" aria-label="Rest length">
+            <button type="button" data-sec="90" aria-pressed="false">1:30</button>
+            <button type="button" data-sec="150" aria-pressed="true">2:30</button>
+            <button type="button" data-sec="180" aria-pressed="false">3:00</button>
+          </div>
+          <div class="timer-btns">
+            <button type="button" class="btn btn-dark small" id="t-start">Start rest</button>
+            <button type="button" class="btn btn-line small" id="t-reset">Reset</button>
+          </div>
+        </div>
+      </div>
+      <p class="sr" id="t-live" aria-live="polite"></p>
+      <details class="rpe">
+        <summary>What does “RPE 8” mean?</summary>
+        <p>Rate of perceived exertion. An 8 means you finish the set with about two good reps left. Coaches use it to set the weight for the day you are actually having.</p>
+      </details>
+    </aside>
+  </div>
+</section>
+
+<section class="light sec" id="programmes">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Programmes</h2>
+      <p>Each programme runs for six weeks. You re-test at the end of the block, then choose what comes next with your coach.</p>
+    </div>
+    <div class="filters">
+      <label class="search" for="q">
+        <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+        <input id="q" type="search" placeholder="Search programmes or exercises, e.g. deadlift" autocomplete="off">
+        <span class="sr">Search programmes or exercises</span>
+      </label>
+      <fieldset class="chips" data-key="goal">
+        <legend>Goal</legend>
+        <button type="button" data-v="all" aria-pressed="true">Any goal</button>
+        <button type="button" data-v="strength" aria-pressed="false">Get strong</button>
+        <button type="button" data-v="muscle" aria-pressed="false">Build muscle</button>
+        <button type="button" data-v="fat" aria-pressed="false">Lose fat</button>
+        <button type="button" data-v="mobility" aria-pressed="false">Move better</button>
+        <button type="button" data-v="performance" aria-pressed="false">Play sport</button>
+      </fieldset>
+      <fieldset class="chips" data-key="level">
+        <legend>Experience</legend>
+        <button type="button" data-v="all" aria-pressed="true">Any</button>
+        <button type="button" data-v="Beginner" aria-pressed="false">New to lifting</button>
+        <button type="button" data-v="Intermediate" aria-pressed="false">Some experience</button>
+        <button type="button" data-v="Advanced" aria-pressed="false">Experienced</button>
+      </fieldset>
+      <fieldset class="chips" data-key="format">
+        <legend>Format</legend>
+        <button type="button" data-v="all" aria-pressed="true">Any</button>
+        <button type="button" data-v="group" aria-pressed="false">Small group</button>
+        <button type="button" data-v="semi" aria-pressed="false">Semi-private</button>
+        <button type="button" data-v="one" aria-pressed="false">1:1</button>
+        <button type="button" data-v="open" aria-pressed="false">Open gym</button>
+      </fieldset>
+    </div>
+    <p class="count" id="count" aria-live="polite"></p>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" hidden>
+      <p>No programme matches all of those filters. Try removing one, or ask about 1:1 coaching.</p>
+      <button type="button" class="btn btn-dark small" id="clear">Clear filters</button>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="timetable">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Timetable</h2>
+      <p class="on-dark">A sample week of coached sessions. Pick a programme to see only its classes.</p>
+    </div>
+    <div class="tt-controls">
+      <div class="tt-tabs" role="tablist" aria-label="Day" id="tt-tabs"></div>
+      <label class="field-inline" for="tt-filter">Programme
+        <select id="tt-filter"><option value="all">All programmes</option></select>
+      </label>
+    </div>
+    <div class="week-grid" id="week-grid"></div>
+  </div>
+</section>
+
+<section class="mem sec" id="membership">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Build your membership</h2>
+      <p class="on-dark">Choose how you want to train and the price updates as you go. Prices are illustrative for this demo and include GST.</p>
+    </div>
+    <div class="mem-grid">
+      <form class="mem-steps" id="mem-form" novalidate>
+        <fieldset class="step">
+          <legend><span class="n">1</span>Programme</legend>
+          <select id="m-prog" aria-label="Programme"></select>
+          <p class="hint" id="m-prog-hint"></p>
+        </fieldset>
+        <fieldset class="step">
+          <legend><span class="n">2</span>Coaching</legend>
+          <div class="opts" id="m-format">
+            <label class="opt"><input type="radio" name="format" id="f-group" value="group"><span class="box"><b>Small group</b><small>Up to 8 people, one coach</small></span></label>
+            <label class="opt"><input type="radio" name="format" id="f-semi" value="semi"><span class="box"><b>Semi-private</b><small>Up to 3 people, one coach</small></span></label>
+            <label class="opt"><input type="radio" name="format" id="f-one" value="one"><span class="box"><b>1:1 coaching</b><small>Just you and your coach</small></span></label>
+            <label class="opt"><input type="radio" name="format" id="f-open" value="open"><span class="box"><b>Open gym only</b><small>Train on your own, no classes</small></span></label>
+          </div>
+        </fieldset>
+        <fieldset class="step" id="step-days">
+          <legend><span class="n">3</span>Days a week</legend>
+          <div class="opts four" id="m-days">
+            <label class="opt"><input type="radio" name="days" id="d-2" value="2"><span class="box"><b>2 days</b><small>8 sessions a month</small></span></label>
+            <label class="opt"><input type="radio" name="days" id="d-3" value="3"><span class="box"><b>3 days</b><small>12–13 a month</small></span></label>
+            <label class="opt"><input type="radio" name="days" id="d-4" value="4"><span class="box"><b>4 days</b><small>17 a month</small></span></label>
+            <label class="opt"><input type="radio" name="days" id="d-unl" value="unl"><span class="box"><b>Unlimited</b><small>Any class, any day</small></span></label>
+          </div>
+        </fieldset>
+        <fieldset class="step" id="step-time">
+          <legend><span class="n">4</span>When you train</legend>
+          <div class="opts" id="m-time">
+            <label class="opt"><input type="radio" name="time" id="t-any" value="any"><span class="box"><b>Any time</b><small>Mornings, evenings and weekends</small></span></label>
+            <label class="opt"><input type="radio" name="time" id="t-off" value="off"><span class="box"><b>Off-peak, save 15%</b><small>Weekdays 10:00 to 17:00</small></span></label>
+          </div>
+        </fieldset>
+        <fieldset class="step">
+          <legend><span class="n">5</span>Commitment</legend>
+          <div class="opts three" id="m-term">
+            <label class="opt"><input type="radio" name="term" id="c-1" value="1"><span class="box"><b>Month to month</b><small>Cancel with 30 days' notice</small></span></label>
+            <label class="opt"><input type="radio" name="term" id="c-6" value="6"><span class="box"><b>6 months</b><small>Save 10%, no joining fee</small></span></label>
+            <label class="opt"><input type="radio" name="term" id="c-12" value="12"><span class="box"><b>12 months</b><small>Save 18%, no joining fee</small></span></label>
+          </div>
+        </fieldset>
+        <fieldset class="step">
+          <legend><span class="n">6</span>Extras</legend>
+          <div class="opts" id="m-extras" style="grid-template-columns:1fr"></div>
+        </fieldset>
+      </form>
+
+      <aside class="summary" id="summary" aria-labelledby="s-title">
+        <p class="s-label">Your membership</p>
+        <h3 id="s-title"></h3>
+        <p class="price"><span class="big" id="s-month"></span><span class="per">a month</span></p>
+        <dl class="lines" id="s-lines"></dl>
+        <ul class="incl" id="s-incl"></ul>
+        <button type="button" class="btn btn-dark wide" id="req-open">Request this membership</button>
+        <form class="form" id="req-form" novalidate hidden>
+          <label for="r-name">Your name<input id="r-name" autocomplete="name" required></label>
+          <label for="r-phone">Mobile number<input id="r-phone" inputmode="tel" autocomplete="tel" placeholder="98765 43210" required></label>
+          <label for="r-start">Preferred start date<input id="r-start" type="date" required></label>
+          <p class="err" id="r-err" role="alert"></p>
+          <button type="submit" class="btn btn-dark wide">Send request (demo)</button>
+          <p class="note">This is a demo. Nothing will be sent.</p>
+        </form>
+        <div class="done" id="req-done" hidden tabindex="-1">
+          <strong>Request not sent: this is a demo</strong>
+          <p id="req-done-text"></p>
+          <p class="note">On a live site this request would go to the studio's WhatsApp or booking system with the plan above.</p>
+          <button type="button" class="btn btn-line small" id="req-again">Change the plan</button>
+        </div>
+        <p class="note">Illustrative prices for a fictional studio.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="light sec" id="coaches">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Coaches</h2>
+      <p>Four coaches, each writing and running their own programmes. You'll meet yours at your first assessment.</p>
+    </div>
+    <ul class="coaches" id="coach-list"></ul>
+  </div>
+</section>
+
+<section class="sec" id="visit">
+  <div class="wrap visit-grid">
+    <div>
+      <h2>Visit the club</h2>
+      <table class="hours">
+        <caption class="sr">Opening hours</caption>
+        <tbody>
+          <tr><th scope="row">Monday to Friday</th><td>6:00 – 22:00</td></tr>
+          <tr><th scope="row">Saturday</th><td>7:00 – 18:00</td></tr>
+          <tr><th scope="row">Sunday</th><td>8:00 – 13:00</td></tr>
+        </tbody>
+      </table>
+      <h3>Your first week</h3>
+      <ol class="first">
+        <li><div><b>Book a free trial session</b><span>Pick a day and time that suits you. Trials run in normal classes.</span></div></li>
+        <li><div><b>45-minute movement assessment</b><span>A coach checks how you squat, hinge, push and pull, and asks about old injuries.</span></div></li>
+        <li><div><b>Start your programme</b><span>You join the next six-week block, with your starting weights already written down.</span></div></li>
+      </ol>
+    </div>
+    <div class="trial" id="trial">
+      <h3>Book a free trial</h3>
+      <p>Tell us when you'd like to come in. In this demo the form checks your details but never sends them.</p>
+      <form class="form" id="trial-form" novalidate>
+        <label for="tr-name">Your name<input id="tr-name" autocomplete="name" required></label>
+        <label for="tr-phone">Mobile number<input id="tr-phone" inputmode="tel" autocomplete="tel" placeholder="98765 43210" required></label>
+        <div class="two">
+          <label for="tr-day">Day<select class="l" id="tr-day"></select></label>
+          <label for="tr-time">Time<select class="l" id="tr-time"><option>Early, 6:00–9:00</option><option>Midday, 11:00–14:00</option><option>Evening, 17:00–21:00</option></select></label>
+        </div>
+        <label for="tr-goal">What would you like to work on?<select class="l" id="tr-goal"><option>Getting stronger</option><option>Building muscle</option><option>Losing fat</option><option>Moving better</option><option>Sport performance</option><option>Not sure yet</option></select></label>
+        <p class="err" id="tr-err" role="alert"></p>
+        <button type="submit" class="btn btn-dark wide">Request a trial (demo)</button>
+      </form>
+      <div class="done" id="trial-done" hidden tabindex="-1">
+        <strong>Trial request not sent: this is a demo</strong>
+        <p id="trial-done-text"></p>
+        <p class="note">Nothing left your browser. A live version would send this to the studio's WhatsApp or CRM.</p>
+        <button type="button" class="btn btn-line small" id="trial-again">Edit details</button>
+      </div>
+    </div>
+  </div>
+  <div class="wrap faq">
+    <h3>Questions</h3>
+    <details><summary>I've never lifted a barbell. Is that a problem?</summary><p>No. Strength Foundations exists for exactly that. You'll start with kettlebells and dumbbells, and move to the barbell when your coach is happy with your technique.</p></details>
+    <details><summary>What should I bring?</summary><p>Flat shoes or trainers, a water bottle and clothes you can squat in. Chalk, belts and towels are provided at the club.</p></details>
+    <details><summary>Can I pause my membership?</summary><p>Six and twelve-month memberships can be frozen for up to four weeks a year, for travel or illness.</p></details>
+    <details><summary>Do you have showers and lockers?</summary><p>Yes, both. Locker and towel service is an optional extra if you want a permanent locker.</p></details>
+    <details><summary>Can I switch programmes mid-block?</summary><p>You can, but most people finish the six weeks first so the re-test means something. Talk to your coach either way.</p></details>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <span class="brand">METTLE</span>
+    <p>Mettle is a fictional studio. This site is a concept demo designed and built by Bhavya Sharma to show programme browsing and a membership builder. Programmes, coaches, prices and the timetable are illustrative, and no form sends any data.</p>
+    <p>Typefaces: Big Shoulders Display and Instrument Sans, both used under the SIL Open Font License 1.1.</p>
+  </div>
+</footer>
+
+<div class="mem-bar" id="mem-bar" aria-hidden="true">
+  <div><b id="mb-price"></b><span id="mb-title"></span></div>
+  <a class="btn btn-dark small" href="#summary" tabindex="-1">See summary</a>
+</div>
+
+<dialog class="sheet" id="pd" aria-labelledby="pd-title">
+  <div class="sheet-inner">
+    <button type="button" class="close" data-close aria-label="Close programme details"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+    <div class="pd-meta" id="pd-meta"></div>
+    <h2 id="pd-title"></h2>
+    <p class="pd-blurb" id="pd-blurb"></p>
+    <div class="pd-two">
+      <section><h3>Who it's for</h3><ul class="ticks" id="pd-for"></ul></section>
+      <section><h3>A typical week</h3><ol class="pd-week" id="pd-week"></ol></section>
+    </div>
+    <section><h3>Sample session</h3><ol class="blocks" id="pd-sample"></ol></section>
+    <section><h3>Class times</h3><ul class="times" id="pd-times"></ul><p class="pd-coach" id="pd-coach"></p></section>
+    <div class="pd-actions">
+      <button type="button" class="btn btn-dark" id="pd-choose">Price this programme</button>
+      <button type="button" class="btn btn-line" data-close>Back to programmes</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const inr = n => '₹' + Math.round(n).toLocaleString('en-IN');
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const FORMAT_NAME = { group: 'Small group', semi: 'Semi-private', one: '1:1 coaching', open: 'Open gym' };
+
+const COACHES = {
+  arjun: { name: 'Arjun Rao', role: 'Strength', bio: 'Ten years coaching the barbell lifts. Keen on slow lowering phases and honest RPE.', initials: 'AR' },
+  meera: { name: 'Meera Iyer', role: 'Conditioning', bio: 'Writes every interval by heart-rate zone, so hard days are hard and easy days stay easy.', initials: 'MI' },
+  kabir: { name: 'Kabir Sethi', role: 'Performance and hypertrophy', bio: 'Tests sprints and jumps at the start and end of every block. Loves a spreadsheet.', initials: 'KS' },
+  tara:  { name: 'Tara D’Souza', role: 'Mobility and 50+', bio: 'Specialises in training around old injuries and getting people back to the floor with confidence.', initials: 'TD' }
+};
+
+const P = [
+  { id:'foundations', name:'Strength Foundations', goals:['strength'], level:'Beginner', format:'group', perWeek:3, mins:60, intensity:2, coach:'arjun',
+    blurb:'Learn the squat, hinge, press and pull with a coach watching every rep. Light enough to learn, heavy enough to progress.',
+    who:['New to lifting, or back after a long break','You want your technique checked before the weights go up','You prefer a set plan to working it out alone'],
+    week:[['Mon','Squat and push'],['Wed','Hinge and pull'],['Fri','Full body and carries']],
+    sample:[['A1','Goblet squat','4 × 8, tempo 3-1-1-0'],['A2','Ring row','4 × 8'],['B1','Kettlebell deadlift','3 × 10'],['B2','Dumbbell bench press','3 × 10'],['C','Farmer carry','4 × 30 m']],
+    slots:[['Mon','07:00'],['Mon','18:30'],['Wed','07:00'],['Wed','18:30'],['Fri','07:00'],['Fri','18:30']] },
+  { id:'barbell', name:'Barbell Strength', goals:['strength'], level:'Intermediate', format:'group', perWeek:3, mins:75, intensity:4, coach:'arjun',
+    blurb:'Squat, bench, deadlift and press, loaded by RPE so heavy days match how you feel. Week six is test week.',
+    who:['You can squat and deadlift with good form','You want numbers on the bar to go up, measurably','You like structure and tracked progress'],
+    week:[['Mon','Squat and bench'],['Wed','Deadlift and press'],['Fri','Squat and bench, volume']],
+    sample:[['A1','Back squat','5 × 3 @ RPE 8'],['A2','Pull-up','5 × 5, tempo 3-1-1-0'],['B1','Romanian deadlift','3 × 8 @ RPE 7'],['B2','Half-kneeling press','3 × 10 each side'],['C','Finisher','EMOM 10: 12 cal row + 8 swings']],
+    slots:[['Mon','06:00'],['Mon','19:30'],['Wed','06:00'],['Wed','19:30'],['Fri','06:00'],['Fri','19:30']] },
+  { id:'hypertrophy', name:'Hypertrophy Block', goals:['muscle'], level:'Intermediate', format:'group', perWeek:4, mins:60, intensity:4, coach:'kabir',
+    blurb:'An upper and lower split with 10 to 20 hard sets per muscle each week, and progress tracked set by set.',
+    who:['You have trained for at least six months','Your main goal is to build muscle','You can commit to four sessions a week'],
+    week:[['Mon','Upper body'],['Tue','Lower body'],['Thu','Upper body'],['Sat','Lower body']],
+    sample:[['A','Incline dumbbell press','4 × 8–10 @ RPE 8'],['B1','Chest-supported row','4 × 10'],['B2','Cable lateral raise','3 × 15'],['C1','EZ-bar curl','3 × 12'],['C2','Rope pushdown','3 × 12']],
+    slots:[['Mon','18:00'],['Tue','18:00'],['Thu','18:00'],['Sat','09:00']] },
+  { id:'engine', name:'Engine', goals:['fat','performance'], level:'All levels', format:'group', perWeek:2, mins:45, intensity:5, coach:'meera',
+    blurb:'Intervals on rowers, bikes and sleds, with heart-rate zones on screen so you know when to push and when to hold back.',
+    who:['You want better fitness alongside strength work','You like hard, short sessions','You are working on body composition'],
+    week:[['Tue','Threshold intervals'],['Thu','Sprints and sled'],['Sat','Long zone 2, optional']],
+    sample:[['A','Warm-up','8 min easy, zone 2'],['B','Row intervals','6 × 3 min at zone 4, 1 min easy'],['C','Sled push','6 × 20 m'],['D','Cool-down','5 min and breathing']],
+    slots:[['Tue','06:30'],['Tue','19:00'],['Thu','06:30'],['Thu','19:00'],['Sat','08:00']] },
+  { id:'mobility', name:'Mobility & Recovery', goals:['mobility'], level:'All levels', format:'group', perWeek:2, mins:45, intensity:1, coach:'tara',
+    blurb:'Joint preparation, end-range strength and breathing. Pairs with any programme, or works on its own.',
+    who:['You feel stiff, or sit for most of the day','You want to recover better between hard sessions','You are easing back after a niggle'],
+    week:[['Wed','Hips and spine'],['Sun','Shoulders and breathing']],
+    sample:[['A','90/90 hip switch','3 × 6 each side'],['B','Cossack squat','3 × 5 each side, tempo 3-1-1-0'],['C','Jefferson curl','3 × 6, light'],['D','Box breathing','5 min']],
+    slots:[['Wed','07:30'],['Wed','20:00'],['Sun','09:30']] },
+  { id:'fifty', name:'Strong After 50', goals:['strength','mobility'], level:'Beginner', format:'semi', perWeek:2, mins:60, intensity:2, coach:'tara',
+    blurb:'Strength training built around balance, grip and everyday tasks, coached in groups of three.',
+    who:['You are 50 or older and new to strength training','You want to keep doing the things you enjoy','You would like more attention than a big class gives'],
+    week:[['Mon','Lower body and balance'],['Thu','Upper body and carries']],
+    sample:[['A','Box squat','3 × 8'],['B','Trap-bar deadlift','3 × 6 @ RPE 6'],['C','Single-leg balance','3 × 30 s each side'],['D','Suitcase carry','4 × 20 m']],
+    slots:[['Mon','10:00'],['Mon','16:30'],['Thu','10:00'],['Thu','16:30']] },
+  { id:'athlete', name:'Athlete Performance', goals:['performance'], level:'Advanced', format:'semi', perWeek:3, mins:75, intensity:5, coach:'kabir',
+    blurb:'Speed, jumps and strength for field and court sports, with testing in week one and week six.',
+    who:['You play a sport and want to be faster and more powerful','You already train regularly','You want test results, not guesses'],
+    week:[['Mon','Acceleration and lower strength'],['Wed','Jumps and upper strength'],['Sat','Top speed and conditioning']],
+    sample:[['A','10 m sprint','6 reps, full rest'],['B','Box jump','5 × 3'],['C','Trap-bar jump','4 × 3'],['D','Front squat','4 × 4 @ RPE 8']],
+    slots:[['Mon','17:00'],['Wed','17:00'],['Sat','07:30']] },
+  { id:'personal', name:'1:1 Coaching', goals:['strength','muscle','fat','mobility','performance'], level:'All levels', format:'one', perWeek:2, mins:60, intensity:3, coach:'any',
+    blurb:'A programme written for you alone and adjusted every session. For specific goals, injuries you are working around, or awkward schedules.',
+    who:['You have a specific goal or deadline','You are working around an injury','Your schedule does not fit class times'],
+    week:[['Flex','Scheduled around you, 2 to 4 days']],
+    sample:[['A','Assessment-led','Written after your first session'],['B','Main lift','Chosen for your goal'],['C','Accessories','Targeted at weak points']],
+    slots:[] },
+  { id:'open', name:'Open Gym', goals:['strength','muscle','fat'], level:'All levels', format:'open', perWeek:0, mins:0, intensity:0, coach:'none',
+    blurb:'Use the racks, platforms and conditioning kit outside coached sessions, with a coach on the floor for questions.',
+    who:['You already follow your own programme','You want access to proper racks and platforms','You might add coaching later'],
+    week:[['Any','Whenever the club is open']],
+    sample:[['–','Your own programme','Coach on the floor for questions']],
+    slots:[] }
+];
+
+/* ---------- programme browser ---------- */
+const filt = { q:'', goal:'all', level:'all', format:'all' };
+const grid = $('#grid');
+function matches(p){
+  if (filt.goal !== 'all' && !p.goals.includes(filt.goal)) return false;
+  if (filt.level !== 'all' && !(p.level === filt.level || p.level === 'All levels')) return false;
+  if (filt.format !== 'all' && p.format !== filt.format) return false;
+  if (filt.q){
+    const hay = (p.name + ' ' + p.blurb + ' ' + p.sample.map(s => s[1]).join(' ') + ' ' + p.week.map(w => w[1]).join(' ')).toLowerCase();
+    if (!filt.q.split(/\s+/).every(t => hay.includes(t))) return false;
+  }
+  return true;
+}
+function weekStrip(p){
+  const on = new Set(p.week.map(w => w[0]));
+  const flex = p.format === 'one' || p.format === 'open';
+  const label = flex ? 'Days to suit you' : 'Trains ' + p.week.map(w => w[0]).join(', ');
+  return '<div class="week" role="img" aria-label="' + esc(label) + '">' + DAYS.map(d =>
+    '<span class="' + (flex ? 'flex' : (on.has(d) ? 'on' : '')) + '" aria-hidden="true">' + d[0] + '</span>').join('') + '</div>';
+}
+function bars(n){ return '<span class="bars" role="img" aria-label="Intensity ' + n + ' of 5">' + [1,2,3,4,5].map(i => '<i class="' + (i <= n ? 'on' : '') + '"></i>').join('') + '</span>'; }
+function card(p){
+  const sessions = p.format === 'open' ? 'Open access' : p.format === 'one' ? '2–4 a week' : p.perWeek + ' a week';
+  const len = p.mins ? p.mins + ' min' : 'Your call';
+  return '<article class="prog">' +
+    '<div class="prog-top"><h3>' + esc(p.name) + '</h3><span class="lvl">' + esc(p.level) + '</span></div>' +
+    '<p class="blurb">' + esc(p.blurb) + '</p>' + weekStrip(p) +
+    '<dl class="spec"><div><dt>Sessions</dt><dd>' + sessions + '</dd></div><div><dt>Session length</dt><dd>' + len + '</dd></div>' +
+    '<div><dt>Format</dt><dd>' + FORMAT_NAME[p.format] + '</dd></div><div><dt>Intensity</dt><dd>' + (p.intensity ? bars(p.intensity) : 'You decide') + '</dd></div></dl>' +
+    '<div class="prog-actions"><button type="button" class="btn btn-dark small" data-open="' + p.id + '">See the programme</button>' +
+    '<button type="button" class="btn btn-line small" data-choose="' + p.id + '">Price it</button></div></article>';
+}
+function renderGrid(){
+  const list = P.filter(matches);
+  grid.innerHTML = list.map(card).join('');
+  $('#count').textContent = list.length === P.length ? 'All ' + P.length + ' programmes' : list.length + (list.length === 1 ? ' programme matches' : ' programmes match');
+  $('#empty').hidden = list.length > 0;
+}
+$$('.chips').forEach(fs => fs.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  filt[fs.dataset.key] = b.dataset.v;
+  $$('button', fs).forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  renderGrid();
+}));
+$('#q').addEventListener('input', e => { filt.q = e.target.value.trim().toLowerCase(); renderGrid(); });
+$('#clear').addEventListener('click', () => {
+  Object.assign(filt, { q:'', goal:'all', level:'all', format:'all' }); $('#q').value = '';
+  $$('.chips').forEach(fs => $$('button', fs).forEach(x => x.setAttribute('aria-pressed', String(x.dataset.v === 'all'))));
+  renderGrid();
+});
+
+/* ---------- programme dialog ---------- */
+const dlg = $('#pd');
+let lastFocus = null, current = null;
+function openProgramme(id){
+  const p = P.find(x => x.id === id); if (!p) return; current = p;
+  $('#pd-title').textContent = p.name;
+  $('#pd-blurb').textContent = p.blurb;
+  const meta = [p.level, FORMAT_NAME[p.format], p.format === 'open' ? 'Open access' : p.format === 'one' ? '2–4 sessions a week' : p.perWeek + ' sessions a week', p.mins ? p.mins + ' min sessions' : null, '6-week block'].filter(Boolean);
+  if (p.format === 'open') meta.pop();
+  $('#pd-meta').innerHTML = meta.map(m => '<span>' + esc(m) + '</span>').join('');
+  $('#pd-for').innerHTML = p.who.map(w => '<li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>' + esc(w) + '</span></li>').join('');
+  $('#pd-week').innerHTML = p.week.map(w => '<li><b>' + esc(w[0]) + '</b><span>' + esc(w[1]) + '</span></li>').join('');
+  $('#pd-sample').innerHTML = p.sample.map(s => '<li><span class="code">' + esc(s[0]) + '</span><span class="ex">' + esc(s[1]) + '</span><span class="rx">' + esc(s[2]) + '</span></li>').join('');
+  $('#pd-times').innerHTML = p.slots.length ? p.slots.map(s => '<li>' + s[0] + ' ' + s[1] + '</li>').join('') : '<li>' + (p.format === 'one' ? 'By appointment' : 'Any time the club is open') + '</li>';
+  const c = COACHES[p.coach];
+  $('#pd-coach').textContent = c ? 'Coached by ' + c.name + ', ' + c.role.toLowerCase() + ' coach.' : (p.coach === 'any' ? 'Coached by whichever coach suits your goal.' : 'A coach is always on the floor.');
+  lastFocus = document.activeElement;
+  dlg.showModal(); document.body.classList.add('modal-open');
+  requestAnimationFrame(() => dlg.classList.add('open'));
+}
+function closeDialog(){
+  dlg.classList.remove('open'); document.body.classList.remove('modal-open');
+  setTimeout(() => { if (dlg.open) dlg.close(); if (lastFocus) lastFocus.focus({ preventScroll: true }); }, 220);
+}
+dlg.addEventListener('cancel', e => { e.preventDefault(); closeDialog(); });
+dlg.addEventListener('click', e => {
+  if (e.target.closest('[data-close]')) return closeDialog();
+  if (e.target !== dlg) return;
+  const r = dlg.getBoundingClientRect();
+  if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) closeDialog();
+});
+$('#pd-choose').addEventListener('click', () => { const id = current && current.id; closeDialog(); setTimeout(() => choose(id), 240); });
+grid.addEventListener('click', e => {
+  const o = e.target.closest('[data-open]'); if (o) return openProgramme(o.dataset.open);
+  const c = e.target.closest('[data-choose]'); if (c) choose(c.dataset.choose);
+});
+
+/* ---------- timetable ---------- */
+const ttGrid = $('#week-grid'), ttTabs = $('#tt-tabs'), ttFilter = $('#tt-filter');
+const todayIdx = (new Date().getDay() + 6) % 7;
+let ttDay = todayIdx;
+P.filter(p => p.slots.length).forEach(p => ttFilter.insertAdjacentHTML('beforeend', '<option value="' + p.id + '">' + esc(p.name) + '</option>'));
+function spots(pid, day, time){ let h = 0; for (const ch of pid + day + time) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h % 7; }
+function renderTimetable(){
+  const sel = ttFilter.value;
+  ttTabs.innerHTML = DAYS.map((d, i) => '<button type="button" role="tab" tabindex="' + (i === ttDay ? 0 : -1) + '" aria-selected="' + (i === ttDay) + '" data-i="' + i + '">' + d + (i === todayIdx ? ' (today)' : '') + '</button>').join('');
+  ttGrid.innerHTML = DAYS.map((d, i) => {
+    const slots = [];
+    P.forEach(p => p.slots.forEach(s => { if (s[0] === d) slots.push({ p, t: s[1] }); }));
+    slots.sort((a, b) => a.t.localeCompare(b.t));
+    const visible = slots.filter(s => sel === 'all' || s.p.id === sel).length;
+    return '<div class="tt-day' + (i === ttDay ? ' active' : '') + '" role="tabpanel" aria-label="' + d + '"><h3>' + d + (i === todayIdx ? '<small>today</small>' : '') + '</h3><ol>' +
+      slots.map(s => {
+        const left = s.p.format === 'semi' ? Math.max(0, 3 - (spots(s.p.id, d, s.t) % 4)) : 8 - spots(s.p.id, d, s.t);
+        const cls = sel === 'all' ? '' : (s.p.id === sel ? ' hit' : ' dim');
+        const c = COACHES[s.p.coach];
+        return '<li class="slot' + cls + '"><span class="tm">' + s.t + '</span><span class="nm">' + esc(s.p.name) + '</span><span class="cm">' + (c ? esc(c.name.split(' ')[0]) + ', ' : '') + (left === 0 ? 'full' : left + ' of ' + (s.p.format === 'semi' ? 3 : 8) + ' spots open') + '</span></li>';
+      }).join('') + (visible === 0 ? '<li class="tt-empty">No ' + (sel === 'all' ? '' : 'matching ') + 'classes</li>' : '') + '</ol></div>';
+  }).join('');
+}
+ttTabs.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; ttDay = +b.dataset.i; renderTimetable(); ttTabs.querySelector('[aria-selected="true"]').focus(); });
+ttTabs.addEventListener('keydown', e => {
+  const k = e.key; let i = ttDay;
+  if (k === 'ArrowRight') i = (ttDay + 1) % 7; else if (k === 'ArrowLeft') i = (ttDay + 6) % 7; else if (k === 'Home') i = 0; else if (k === 'End') i = 6; else return;
+  e.preventDefault(); ttDay = i; renderTimetable(); ttTabs.querySelector('[aria-selected="true"]').focus();
+});
+ttFilter.addEventListener('change', renderTimetable);
+
+/* ---------- membership builder ---------- */
+const PRICE = { group:{2:5400,3:6900,4:8200,unl:9500}, semi:{2:10500,3:14400,4:17600}, one:{2:17000,3:24000,4:30400}, open:3400 };
+const EXTRAS = [
+  { id:'nutrition', name:'Nutrition coaching', note:'Fortnightly check-ins with a nutrition coach', price:2500 },
+  { id:'recovery', name:'Recovery suite', note:'Sauna and cold plunge, unlimited', price:1800 },
+  { id:'scan', name:'Body composition scan', note:'One scan a month, results on your file', price:700 },
+  { id:'locker', name:'Locker and towel service', note:'Your own locker, fresh towels every visit', price:600 }
+];
+const JOIN_FEE = 1500;
+const m = { prog:'barbell', format:'group', days:'3', time:'any', term:'1', extras:new Set() };
+const progSel = $('#m-prog');
+progSel.innerHTML = P.map(p => '<option value="' + p.id + '">' + esc(p.name) + '</option>').join('');
+$('#m-extras').innerHTML = EXTRAS.map(x => '<label class="opt check"><input type="checkbox" id="x-' + x.id + '" value="' + x.id + '"><span class="box"><span class="tick"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg></span><span><b>' + x.name + '</b><br><small>' + x.note + '</small></span><span class="amt">+' + inr(x.price) + '</span></span></label>').join('');
+
+function allowedFormats(p){ return p.format === 'open' ? ['open'] : p.format === 'one' ? ['one'] : [p.format, 'one']; }
+function setRadio(name, val){ const el = $('input[name="' + name + '"][value="' + val + '"]'); if (el) el.checked = true; }
+function syncForm(){
+  const p = P.find(x => x.id === m.prog);
+  progSel.value = m.prog;
+  const allowed = allowedFormats(p);
+  if (!allowed.includes(m.format)) m.format = allowed[0];
+  $$('input[name="format"]').forEach(r => { r.disabled = !allowed.includes(r.value); });
+  setRadio('format', m.format);
+  const daysOk = m.format === 'open' ? [] : m.format === 'group' ? ['2','3','4','unl'] : ['2','3','4'];
+  $('#step-days').hidden = m.format === 'open';
+  if (m.format !== 'open' && !daysOk.includes(m.days)) m.days = '3';
+  $$('input[name="days"]').forEach(r => { r.disabled = !daysOk.includes(r.value); });
+  setRadio('days', m.days);
+  const offOk = m.format === 'group' || m.format === 'open';
+  $('#step-time').hidden = !offOk;
+  if (!offOk) m.time = 'any';
+  setRadio('time', m.time);
+  setRadio('term', m.term);
+  EXTRAS.forEach(x => { $('#x-' + x.id).checked = m.extras.has(x.id); });
+  let n = 0; $$('#mem-form .step').forEach(st => { if (!st.hidden) { n += 1; $('.n', st).textContent = n; } });
+  const c = COACHES[p.coach];
+  const hint = p.format === 'open' ? 'Open gym has no classes, so there is nothing to choose about days or coaching.'
+    : p.format === 'one' ? 'Written for you alone. Pick how many days a week below.'
+    : p.name + ' is a ' + FORMAT_NAME[p.format].toLowerCase() + ' programme' + (c ? ' with ' + c.name : '') + '. You can also do it 1:1.';
+  $('#m-prog-hint').textContent = hint;
+}
+function compute(){
+  const p = P.find(x => x.id === m.prog);
+  const base = m.format === 'open' ? PRICE.open : PRICE[m.format][m.days];
+  const off = (m.time === 'off' && (m.format === 'group' || m.format === 'open')) ? Math.round(base * 0.15) : 0;
+  const pct = { '1':0, '6':0.10, '12':0.18 }[m.term];
+  const commit = Math.round((base - off) * pct);
+  const member = base - off - commit;
+  const extras = EXTRAS.filter(x => m.extras.has(x.id));
+  const extrasTotal = extras.reduce((s, x) => s + x.price, 0);
+  const monthly = member + extrasTotal;
+  const join = m.term === '1' ? JOIN_FEE : 0;
+  const perWk = m.days === 'unl' ? 5 : +m.days;
+  const perSession = m.format === 'open' ? null : member / (perWk * 52 / 12);
+  return { p, base, off, commit, member, extras, monthly, join, perSession, months: +m.term };
+}
+function render(){
+  syncForm();
+  const r = compute();
+  const daysTxt = m.format === 'open' ? '' : m.days === 'unl' ? ', unlimited days' : ', ' + m.days + ' days a week';
+  const title = r.p.format === 'one' || r.p.format === 'open' ? r.p.name + daysTxt : r.p.name + ': ' + (m.format === 'open' ? 'open gym' : FORMAT_NAME[m.format].toLowerCase()) + daysTxt;
+  $('#s-title').textContent = title;
+  $('#s-month').textContent = inr(r.monthly);
+  const L = [];
+  L.push(['Membership, ' + FORMAT_NAME[m.format].toLowerCase(), inr(r.base)]);
+  if (r.off) L.push(['Off-peak saving', '−' + inr(r.off), 'neg']);
+  if (r.commit) L.push([m.term + '-month commitment saving', '−' + inr(r.commit), 'neg']);
+  r.extras.forEach(x => L.push([x.name, '+' + inr(x.price)]));
+  L.push(['Joining fee, one time', r.join ? inr(r.join) : 'Waived']);
+  L.push(['First payment', inr(r.monthly + r.join), 'tot']);
+  if (r.months > 1) L.push(['Total over ' + r.months + ' months', inr(r.monthly * r.months + r.join), 'tot']);
+  $('#s-lines').innerHTML = L.map(l => '<div class="' + (l[2] || '') + '"><dt>' + esc(l[0]) + '</dt><dd>' + l[1] + '</dd></div>').join('');
+  const inc = [];
+  if (m.format !== 'open') inc.push('Movement assessment in your first week');
+  if (r.perSession) inc.push('Works out at about ' + inr(Math.round(r.perSession / 10) * 10) + ' per coached session');
+  inc.push(m.format === 'open' ? 'Racks, platforms and conditioning kit during opening hours' : 'Open gym access whenever the club is open');
+  if (m.term !== '1') inc.push('Freeze for up to four weeks a year');
+  if (m.term === '1') inc.push('No lock-in: cancel with 30 days’ notice');
+  $('#s-incl').innerHTML = inc.map(t => '<li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>' + esc(t) + '</span></li>').join('');
+  $('#mb-price').textContent = inr(r.monthly) + ' a month';
+  $('#mb-title').textContent = title;
+}
+progSel.addEventListener('change', () => {
+  m.prog = progSel.value;
+  const p = P.find(x => x.id === m.prog);
+  m.format = allowedFormats(p)[0];
+  if (p.perWeek) m.days = String(Math.min(4, Math.max(2, p.perWeek)));
+  render();
+});
+$('#mem-form').addEventListener('change', e => {
+  const t = e.target;
+  if (t.name === 'format') m.format = t.value;
+  else if (t.name === 'days') m.days = t.value;
+  else if (t.name === 'time') m.time = t.value;
+  else if (t.name === 'term') m.term = t.value;
+  else if (t.type === 'checkbox') { t.checked ? m.extras.add(t.value) : m.extras.delete(t.value); }
+  render();
+});
+function choose(id){
+  const p = P.find(x => x.id === id); if (!p) return;
+  m.prog = id; m.format = allowedFormats(p)[0];
+  if (p.perWeek) m.days = String(Math.min(4, Math.max(2, p.perWeek)));
+  render();
+  $('#membership').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  setTimeout(() => progSel.focus({ preventScroll: true }), 500);
+}
+
+/* request form (simulated) */
+const phoneOk = v => /^(?:\+?91[\s-]?)?[6-9]\d{4}[\s-]?\d{5}$/.test(v.trim());
+function validate(fields, errEl){
+  let msg = '';
+  fields.forEach(([el, ok, text]) => { const bad = !ok(el.value); el.setAttribute('aria-invalid', String(bad)); if (bad && !msg) { msg = text; el.focus(); } });
+  errEl.textContent = msg; return !msg;
+}
+const reqForm = $('#req-form');
+const startInput = $('#r-start');
+const t0 = new Date(); t0.setDate(t0.getDate() + 1);
+startInput.min = t0.toISOString().slice(0, 10);
+$('#req-open').addEventListener('click', () => { reqForm.hidden = false; $('#req-open').hidden = true; $('#r-name').focus(); });
+reqForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const ok = validate([
+    [$('#r-name'), v => v.trim().length > 1, 'Add your name so the coach knows who to expect.'],
+    [$('#r-phone'), phoneOk, 'Enter a 10-digit Indian mobile number, for example 98765 43210.'],
+    [startInput, v => !!v && v >= startInput.min, 'Choose a start date from tomorrow onwards.']
+  ], $('#r-err'));
+  if (!ok) return;
+  const r = compute();
+  const d = new Date(startInput.value + 'T00:00:00');
+  $('#req-done-text').textContent = $('#r-name').value.trim().split(' ')[0] + ', your plan was ' + $('#s-title').textContent + ' at ' + inr(r.monthly) + ' a month, starting ' + d.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long' }) + '.';
+  reqForm.hidden = true; $('#req-done').hidden = false; $('#req-done').focus();
+});
+$('#req-again').addEventListener('click', () => { $('#req-done').hidden = true; $('#req-open').hidden = false; $('#mem-form').querySelector('select').focus(); });
+
+/* trial form (simulated) */
+const trDay = $('#tr-day');
+for (let i = 1; i <= 7; i++) { const d = new Date(); d.setDate(d.getDate() + i); trDay.insertAdjacentHTML('beforeend', '<option>' + d.toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'short' }) + '</option>'); }
+$('#trial-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const ok = validate([
+    [$('#tr-name'), v => v.trim().length > 1, 'Add your name.'],
+    [$('#tr-phone'), phoneOk, 'Enter a 10-digit Indian mobile number, for example 98765 43210.']
+  ], $('#tr-err'));
+  if (!ok) return;
+  $('#trial-done-text').textContent = 'You asked for a trial on ' + trDay.value + ', ' + $('#tr-time').value.toLowerCase() + ', to work on ' + $('#tr-goal').value.toLowerCase() + '.';
+  $('#trial-form').hidden = true; $('#trial-done').hidden = false; $('#trial-done').focus();
+});
+$('#trial-again').addEventListener('click', () => { $('#trial-done').hidden = true; $('#trial-form').hidden = false; $('#tr-name').focus(); });
+
+/* coaches */
+$('#coach-list').innerHTML = Object.entries(COACHES).map(([id, c]) => {
+  const runs = P.filter(p => p.coach === id).map(p => p.name).join(', ');
+  return '<li class="coach"><span class="mono" aria-hidden="true">' + c.initials + '</span><h3>' + esc(c.name) + '</h3><p class="role">' + esc(c.role) + '</p><p>' + esc(c.bio) + '</p><p class="runs">Runs ' + esc(runs) + '</p></li>';
+}).join('');
+
+/* rest timer */
+const CIRC = 326.73, ringProg = $('#ring-prog'), ringT = $('#ring-t'), ring = $('#ring'), startBtn = $('#t-start');
+let total = 150, remaining = 150, running = false, endAt = 0, raf = 0;
+function draw(){ const s = Math.max(0, remaining); ringT.textContent = Math.floor(Math.ceil(s) / 60) + ':' + String(Math.ceil(s) % 60).padStart(2, '0'); ringProg.style.strokeDashoffset = String(CIRC * (1 - s / total)); }
+function tick(){ remaining = (endAt - performance.now()) / 1000; if (remaining <= 0){ remaining = 0; running = false; ring.classList.add('done'); startBtn.textContent = 'Start rest'; ringT.textContent = 'Go'; $('#t-live').textContent = 'Rest finished. Next set.'; ringProg.style.strokeDashoffset = '0'; return; } draw(); raf = requestAnimationFrame(tick); }
+startBtn.addEventListener('click', () => {
+  if (running){ running = false; cancelAnimationFrame(raf); startBtn.textContent = 'Resume'; return; }
+  if (remaining <= 0) remaining = total;
+  ring.classList.remove('done'); running = true; endAt = performance.now() + remaining * 1000; startBtn.textContent = 'Pause'; $('#t-live').textContent = 'Rest timer started'; tick();
+});
+$('#t-reset').addEventListener('click', () => { running = false; cancelAnimationFrame(raf); remaining = total; ring.classList.remove('done'); startBtn.textContent = 'Start rest'; draw(); });
+$$('.presets button').forEach(b => b.addEventListener('click', () => {
+  $$('.presets button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  total = +b.dataset.sec; running = false; cancelAnimationFrame(raf); remaining = total; ring.classList.remove('done'); startBtn.textContent = 'Start rest'; draw();
+}));
+
+/* mobile nav */
+const menuBtn = $('#menu-btn'), nav = $('#nav');
+menuBtn.addEventListener('click', () => { const o = nav.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', String(o)); });
+nav.addEventListener('click', e => { if (e.target.closest('a')) { nav.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && nav.classList.contains('open')) { nav.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.focus(); } });
+
+/* sticky membership bar on small screens */
+const bar = $('#mem-bar');
+if ('IntersectionObserver' in window){
+  let formVisible = false, sumVisible = false;
+  const upd = () => bar.classList.toggle('show', formVisible && !sumVisible);
+  new IntersectionObserver(es => { es.forEach(en => { formVisible = en.isIntersecting; }); upd(); }, { rootMargin: '0px 0px -40% 0px' }).observe($('#mem-form'));
+  new IntersectionObserver(es => { es.forEach(en => { sumVisible = en.isIntersecting; }); upd(); }).observe($('#summary'));
+}
+
+/* hide maker link until the portfolio URL is set */
+const maker = $('#maker-link'); if (maker.getAttribute('href').includes('{{')) maker.hidden = true;
+
+renderGrid(); renderTimetable(); render(); draw();
+})();
+</script>

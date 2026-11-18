@@ -1,0 +1,45 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../fonts.css"><link rel="stylesheet" href="../brand-dabba.css">
+<style>
+body{background:var(--turmeric);overflow:hidden}
+#stack{position:absolute;left:150px;top:90px;width:360px;height:560px}
+.tier{position:absolute;left:40px;width:280px;height:110px;border-radius:26px;border:8px solid var(--ink);background:#E9EDF0}
+.tier i{position:absolute;left:18px;top:14px;width:14px;height:66px;border-radius:7px;background:#fff;opacity:.75}
+#lid{position:absolute;left:58px;width:244px;height:70px;border-radius:120px 120px 16px 16px;border:8px solid var(--ink);background:#C2CAD0}
+#lid b{position:absolute;left:50%;top:-34px;width:60px;height:26px;margin-left:-30px;border-radius:13px;border:7px solid var(--ink);background:var(--tomato)}
+.rail{position:absolute;top:150px;width:12px;height:330px;border-radius:6px;background:var(--ink)}
+.steam{position:absolute;width:16px;height:70px;border:7px solid #fff;border-color:#fff transparent transparent transparent;border-radius:50%}
+#title{position:absolute;left:600px;top:200px;font-family:var(--d);font-size:150px;line-height:.9;color:var(--white);text-shadow:0 10px 0 var(--ink);white-space:nowrap}
+#title span{display:inline-block}
+#tag{position:absolute;left:606px;top:500px;font-size:44px;font-weight:800;background:var(--ink);color:var(--white);padding:8px 24px;border-radius:14px}
+#wipe{position:absolute;left:330px;top:370px;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:var(--tomato)}
+</style></head><body>
+<div id="stack">
+  <div class="rail" id="r1" style="left:8px"></div><div class="rail" id="r2" style="right:8px"></div>
+  <div class="tier" id="t3" style="top:440px"><i></i></div>
+  <div class="tier" id="t2" style="top:320px"><i></i></div>
+  <div class="tier" id="t1" style="top:200px"><i></i></div>
+  <div id="lid" style="top:140px"><b></b></div>
+  <div class="steam" id="s1" style="left:140px;top:40px"></div><div class="steam" id="s2" style="left:196px;top:30px"></div>
+</div>
+<div id="title"><span>D</span><span>a</span><span>b</span><span>b</span><span>a</span><br><span>D</span><span>i</span><span>a</span><span>r</span><span>i</span><span>e</span><span>s</span></div>
+<div id="tag">Weekday lunches in 20 minutes</div>
+<div id="wipe"></div>
+<script src="ease.js"></script>
+<script>
+const DUR = 5;
+function render(t){
+  ['t3', 't2', 't1'].forEach((id, i) => { const a = .1 + i * .32, p = eBounce(prog(t, a, a + .6)); set($('#' + id), { transform: 'translateY(' + lerp(-700, 0, p) + 'px)', opacity: t >= a ? 1 : 0 }); });
+  const pl = eBounce(prog(t, 1.05, 1.6));
+  const pop = t > 1.9 ? -60 * Math.sin(Math.PI * prog(t, 1.9, 2.4)) : 0;
+  set($('#lid'), { transform: 'translateY(' + (lerp(-760, 0, pl) + pop) + 'px) rotate(' + (pop ? lerp(0, -8, prog(t, 1.9, 2.15)) * (1 - prog(t, 2.15, 2.4)) : 0) + 'deg)', opacity: t >= 1.05 ? 1 : 0 });
+  const pr = eOut(prog(t, 1.5, 1.8));
+  ['r1', 'r2'].forEach(id => set($('#' + id), { transform: 'scaleY(' + pr + ')', transformOrigin: 'top' }));
+  ['s1', 's2'].forEach((id, i) => { const a = 2.1 + i * .15, p = prog(t, a, a + 1.2); set($('#' + id), { opacity: Math.sin(Math.PI * p) * .9, transform: 'translateY(' + lerp(20, -60, p) + 'px)' }); });
+  $$('#title span').forEach((s, i) => { const a = 2.0 + i * .06, p = eBack(prog(t, a, a + .4)); set(s, { opacity: prog(t, a, a + .1), transform: 'translateY(' + lerp(90, 0, p) + 'px) rotate(' + lerp(i % 2 ? 10 : -10, 0, p) + 'deg)' }); });
+  const pt = eOut(prog(t, 3.0, 3.5));
+  set($('#tag'), { opacity: pt, transform: 'translateX(' + lerp(-60, 0, pt) + 'px)' });
+  const pw = eIn(prog(t, 4.3, 5));
+  set($('#wipe'), { transform: 'scale(' + lerp(0, 80, pw) + ')', opacity: t >= 4.3 ? 1 : 0 });
+}
+render(0);
+</script></body></html>

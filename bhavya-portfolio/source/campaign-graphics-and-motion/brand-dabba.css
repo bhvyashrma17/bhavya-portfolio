@@ -1,0 +1,8 @@
+:root{--tomato:#E8432E;--turmeric:#FFC93C;--leaf:#2F9E44;--ink:#161616;--sky:#8FD3F4;--white:#fff;--d:'Bagel Fat One';--b:'Mukta'}
+*{box-sizing:border-box;margin:0;padding:0}html,body{overflow:hidden}
+body{position:relative;width:1280px;height:720px;font-family:var(--b);-webkit-font-smoothing:antialiased}
+.abs{position:absolute}
+.title{font-family:var(--d);line-height:.92;color:var(--white);-webkit-text-stroke:0;text-shadow:0 8px 0 var(--ink)}
+.chan{display:flex;align-items:center;gap:12px;font-family:var(--d);font-size:34px;color:var(--ink)}
+.chan b{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--ink);color:var(--turmeric);font-size:30px}
+.badge{display:grid;place-items:center;border-radius:50%;font-family:var(--d);text-align:center;line-height:.9}

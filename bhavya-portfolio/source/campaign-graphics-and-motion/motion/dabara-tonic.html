@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../fonts.css"><link rel="stylesheet" href="../brand-dabara.css">
+<style>
+body{width:1080px;height:1080px;background:var(--rose-2);color:var(--chicory);overflow:hidden;position:relative}
+#lg{position:absolute;left:72px;top:64px;color:var(--chicory)}
+#glass{position:absolute;left:560px;top:150px;width:420px;height:800px}
+#h{position:absolute;left:66px;top:260px;width:520px;font-family:var(--d);font-size:118px;line-height:1.04}
+#h span{display:inline-block}
+#badge{position:absolute;left:96px;top:760px;width:220px;height:220px;border-radius:50%;background:var(--rose);display:grid;place-items:center;text-align:center}
+#badge b{font-family:var(--d);font-weight:400;font-size:80px;line-height:.9;display:block}
+#badge span{font-size:26px;font-weight:700}
+#shadow{position:absolute;left:600px;top:930px;width:340px;height:40px;border-radius:50%;background:rgba(46,27,19,.12)}
+</style></head><body>
+<span id="lg" class="logo">Dabara</span>
+<div id="shadow"></div>
+<svg id="glass" viewBox="0 0 420 800" aria-hidden="true">
+  <defs><clipPath id="cup"><path d="M30 60h360l-34 700H64z"/></clipPath></defs>
+  <g clip-path="url(#cup)">
+    <rect id="tonic" x="0" y="800" width="420" height="0" fill="#F3ECDD"/>
+    <rect id="dec" x="0" y="800" width="420" height="0" fill="#6B3F26"/>
+    <g id="bub" fill="#fff" opacity=".8"></g>
+    <rect id="ice1" x="120" y="-200" width="110" height="110" rx="18" fill="#fff" opacity=".78"/>
+    <rect id="ice2" x="210" y="-200" width="100" height="100" rx="18" fill="#fff" opacity=".7"/>
+  </g>
+  <path id="stream" d="M330 -20 C 300 60, 260 140, 250 220" stroke="#6B3F26" stroke-width="22" fill="none" stroke-linecap="round"/>
+  <path id="outline" d="M30 60h360l-34 700H64z" fill="none" stroke="#C5D3D9" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M70 100l20 560" stroke="#fff" stroke-width="14" stroke-linecap="round" opacity=".7"/>
+  <path id="peel" d="M250 40c40-60 120-40 110 30" fill="none" stroke="#F2994A" stroke-width="22" stroke-linecap="round"/>
+</svg>
+<p id="h"><span>Kaapi</span> <span>Tonic</span> <span>is</span> <span>back.</span></p>
+<div id="badge"><div><b>₹180</b><span>a glass</span></div></div>
+<script src="ease.js"></script>
+<script>
+const DUR = 7;
+const bubs = []; const bg = document.getElementById('bub');
+for (let i = 0; i < 18; i++){ const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle'); c.setAttribute('r', 4 + (i * 7) % 6); c.setAttribute('cx', 70 + (i * 53) % 280); bg.appendChild(c); bubs.push({ c, sp: 120 + (i * 37) % 90, off: (i * .37) % 2 }); }
+const outline = document.getElementById('outline'); const L = outline.getTotalLength(); outline.style.strokeDasharray = L;
+function render(t){
+  const out = 1 - eIn(prog(t, 6.4, 7));
+  document.body.style.opacity = 1;
+  set($('#lg'), { opacity: prog(t, 0, .4) * out });
+  outline.style.strokeDashoffset = L * (1 - eIO(prog(t, 0, 1))); outline.style.opacity = out;
+  set($('#shadow'), { opacity: prog(t, .4, 1) * out });
+  const i1 = eBounce(prog(t, .7, 1.5)), i2 = eBounce(prog(t, .9, 1.7));
+  $('#ice1').setAttribute('y', lerp(-200, 560, i1)); $('#ice2').setAttribute('y', lerp(-200, 640, i2));
+  $('#ice1').setAttribute('transform', 'rotate(' + lerp(-30, 12, i1) + ' 175 615)');
+  $('#ice2').setAttribute('transform', 'rotate(' + lerp(25, -8, i2) + ' 260 690)');
+  const ft = eOut(prog(t, 1.4, 2.8)), top = lerp(800, 200, ft);
+  $('#tonic').setAttribute('y', top); $('#tonic').setAttribute('height', 800 - top);
+  const fd = eOut(prog(t, 2.7, 3.9)), dh = lerp(0, 150, fd);
+  $('#dec').setAttribute('y', top); $('#dec').setAttribute('height', dh);
+  const sOn = t > 2.5 && t < 3.9; const sp = prog(t, 2.5, 2.8), se = prog(t, 3.6, 3.9);
+  set($('#stream'), { opacity: sOn ? 1 : 0, strokeDasharray: '400', strokeDashoffset: String(lerp(400, 0, sp) + lerp(0, -400, se)) });
+  bubs.forEach(b => { const life = ((t - 1.6 + b.off) * b.sp / 600) % 1; const y = lerp(780, top + dh + 20, life); b.c.setAttribute('cy', y); b.c.setAttribute('opacity', t > 1.6 && y > top + dh ? .85 : 0); });
+  const pp = eBack(prog(t, 3.8, 4.5));
+  set($('#peel'), { opacity: prog(t, 3.8, 4) * out, transform: 'translate(' + lerp(60, 0, pp) + 'px,' + lerp(-120, 0, pp) + 'px) rotate(' + lerp(-60, 0, pp) + 'deg)', transformOrigin: '300px 40px' });
+  $$('#h span').forEach((s, i) => { const a = 4.2 + i * .22, p = eBack(prog(t, a, a + .45)); set(s, { opacity: prog(t, a, a + .15) * out, transform: 'translateY(' + lerp(60, 0, p) + 'px) scale(' + lerp(.8, 1, p) + ')' }); });
+  const pb = eBack(prog(t, 5.1, 5.8));
+  set($('#badge'), { opacity: prog(t, 5.1, 5.3) * out, transform: 'rotate(' + lerp(-120, -9, pb) + 'deg) scale(' + lerp(.4, 1, pb) + ')' });
+  set($('#glass'), { opacity: out });
+}
+render(0);
+</script></body></html>

@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../fonts.css"><link rel="stylesheet" href="../brand-mettle.css">
+<style>
+/* reel cover: title inside the 3:4 grid crop, y 240 to 1680 */
+.rings{position:absolute;left:50%;top:960px;transform:translate(-50%,-50%);width:1500px;height:1500px}
+.rings svg{width:100%;height:100%}
+.brandbar{position:absolute;left:0;right:0;top:318px;justify-content:center;color:var(--chalk)}
+.brandbar .ring{color:var(--brass)}
+.mid{position:absolute;left:0;right:0;top:440px;text-align:center;font-family:var(--d);font-weight:900;text-transform:uppercase;line-height:.8}
+.mid .a{display:block;font-size:150px;color:var(--chalk)}
+.mid .num{display:block;font-size:760px;line-height:.78;margin-top:10px;
+  background:
+    repeating-linear-gradient(45deg,rgba(15,43,36,.34) 0 3px,transparent 3px 16px),
+    repeating-linear-gradient(-45deg,rgba(15,43,36,.34) 0 3px,transparent 3px 16px),
+    linear-gradient(180deg,var(--brass-2),var(--brass) 70%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.mid .b{display:block;font-size:150px;color:var(--chalk);margin-top:20px}
+.sub{position:absolute;left:0;right:0;top:1500px;text-align:center;font-size:40px;font-weight:600;color:var(--moss)}
+</style></head>
+<body class="story dark">
+<div class="rings"><svg viewBox="0 0 100 100" aria-hidden="true">
+  <circle cx="50" cy="50" r="46" fill="none" stroke="#15372E" stroke-width="7"/>
+  <circle cx="50" cy="50" r="31" fill="none" stroke="#15372E" stroke-width="4.5"/>
+</svg></div>
+<header class="brandbar">
+  <svg class="ring" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="16" cy="16" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="16" r="2.6" fill="currentColor"/></svg>
+  <span class="wm">METTLE</span>
+</header>
+<div class="mid"><span class="a">Block</span><span class="num">4</span><span class="b">in 10 seconds</span></div>
+<p class="sub">Six weeks, four programmes, one re-test</p>
+</body></html>

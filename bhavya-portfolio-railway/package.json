@@ -1,0 +1,8 @@
+{
+  "name": "bhavya-sharma-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bhavya Sharma's portfolio and demo projects, served as static files.",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}

@@ -1,0 +1,10 @@
+:root{--ink:#172238;--ink-2:#2A3A5C;--rain:#7FA3C9;--mist:#E4ECF4;--umbrella:#F2B33D;--paper:#FBFAF6;--d:'Young Serif';--t:'Newsreader'}
+*{box-sizing:border-box;margin:0;padding:0}html,body{overflow:hidden}
+body{position:relative;font-family:var(--t);-webkit-font-smoothing:antialiased}
+.post{width:1080px;height:1350px}.story{width:1080px;height:1920px}.sq{width:1080px;height:1080px}
+.rain{background-image:repeating-linear-gradient(105deg,transparent 0 46px,rgba(127,163,201,.32) 46px 48px,transparent 48px 97px)}
+.rain-dark{background-image:repeating-linear-gradient(105deg,transparent 0 46px,rgba(127,163,201,.18) 46px 48px,transparent 48px 97px)}
+.mark{font-family:var(--d);font-size:40px;line-height:1;display:flex;align-items:center;gap:14px}
+.mark i{display:block;width:34px;height:34px;border-radius:50% 50% 0 0;border:5px solid currentColor;border-bottom:0;position:relative}
+.mark i::after{content:"";position:absolute;left:50%;top:26px;width:5px;height:22px;background:currentColor;margin-left:-2.5px;border-radius:0 0 6px 6px}
+.abs{position:absolute}

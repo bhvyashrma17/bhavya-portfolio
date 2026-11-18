@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="../fonts.css"><link rel="stylesheet" href="../brand-mettle.css">
+<style>
+.top{position:absolute;left:0;right:0;top:0;height:22px}
+.brandbar{position:absolute;left:72px;right:72px;top:74px;color:var(--chalk)}
+.brandbar .ring{color:var(--brass)}
+.brandbar .tag{font-family:var(--d);font-weight:800;font-size:40px;color:var(--moss)}
+h1{position:absolute;left:70px;top:186px;font-family:var(--d);font-weight:900;font-size:150px;line-height:.84;text-transform:uppercase}
+h1 span{color:var(--brass-2)}
+.steps{position:absolute;left:72px;right:72px;top:500px;list-style:none;counter-reset:s}
+.steps li{display:grid;grid-template-columns:132px minmax(0,1fr);gap:0 18px;padding:30px 0;border-top:2px solid rgba(236,237,232,.2);counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--d);font-weight:900;font-size:120px;line-height:.8;color:var(--brass)}
+.steps h2{font-family:var(--d);font-weight:800;font-size:66px;line-height:.95}
+.steps p{font-size:31px;line-height:1.3;color:var(--moss);margin-top:10px}
+.trial{position:absolute;left:72px;right:72px;bottom:72px;display:flex;align-items:center;justify-content:space-between;gap:24px;background:var(--brass);color:var(--forest);border-radius:999px;padding:26px 40px}
+.trial b{font-size:34px}
+.trial span{font-family:var(--d);font-weight:900;font-size:42px;text-transform:uppercase}
+</style></head>
+<body class="post dark">
+<div class="top knurl"></div>
+<header class="brandbar">
+  <svg class="ring" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="16" cy="16" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="16" r="2.6" fill="currentColor"/></svg>
+  <span class="wm">METTLE</span>
+  <span class="tag">3/3</span>
+</header>
+<h1>How to join<br><span>Block 4</span></h1>
+<ol class="steps">
+  <li><div><h2>Pick a programme</h2><p>Four to choose from. Not sure? Ask any coach on the floor.</p></div></li>
+  <li><div><h2>Book your week</h2><p>At the front desk, or send us a message with the word BLOCK 4.</p></div></li>
+  <li><div><h2>Turn up on Monday</h2><p>Your starting weights are already written on your card.</p></div></li>
+</ol>
+<div class="trial"><b>New to Mettle?</b><span>First session is free</span></div>
+</body></html>

@@ -1,0 +1,6 @@
+:root{--chicory:#2E1B13;--chicory-2:#48291C;--rose:#E9708D;--rose-2:#F6C3D0;--rose-soft:#FDEBF0;--steel:#D5DBE0;--steel-2:#EEF1F4;--leaf:#1F6B47;--white:#fff;--d:'Shrikhand';--b:'Bricolage Grotesque'}
+*{box-sizing:border-box;margin:0;padding:0}html,body{overflow:hidden}
+body{position:relative;font-family:var(--b);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+.post{width:1080px;height:1350px}.story{width:1080px;height:1920px}.sq{width:1080px;height:1080px}
+.logo{font-family:var(--d);font-size:60px;line-height:1}
+.abs{position:absolute}

@@ -1,0 +1,122 @@
+[
+ {
+  "id": "mettle-01-launch",
+  "file": "mettle-01-launch.html",
+  "w": 1080,
+  "h": 1350
+ },
+ {
+  "id": "mettle-02-carousel-1",
+  "file": "mettle-02-carousel-1.html",
+  "w": 1080,
+  "h": 1350
+ },
+ {
+  "id": "mettle-03-carousel-2",
+  "file": "mettle-03-carousel-2.html",
+  "w": 1080,
+  "h": 1350
+ },
+ {
+  "id": "mettle-04-carousel-3",
+  "file": "mettle-04-carousel-3.html",
+  "w": 1080,
+  "h": 1350
+ },
+ {
+  "id": "mettle-05-story-tomorrow",
+  "file": "mettle-05-story-tomorrow.html",
+  "w": 1080,
+  "h": 1920
+ },
+ {
+  "id": "mettle-06-reel-cover",
+  "file": "mettle-06-reel-cover.html",
+  "w": 1080,
+  "h": 1920
+ },
+ {
+  "id": "mettle-07-fifty-post",
+  "file": "mettle-07-fifty-post.html",
+  "w": 1080,
+  "h": 1350
+ },
+ {
+  "id": "mettle-08-fifty-story",
+  "file": "mettle-08-fifty-story.html",
+  "w": 1080,
+  "h": 1920
+ },
+ {
+  "id": "dabara-01-tonic-launch",
+  "file": "dabara-01-tonic-launch.html",
+  "w": 1080,
+  "h": 1350
+ },
+ {
+  "id": "dabara-02-cold-story",
+  "file": "dabara-02-cold-story.html",
+  "w": 1080,
+  "h": 1920
+ },
+ {
+  "id": "dabara-03-bun-square",
+  "file": "dabara-03-bun-square.html",
+  "w": 1080,
+  "h": 1080
+ },
+ {
+  "id": "dabara-04-pour-reel-cover",
+  "file": "dabara-04-pour-reel-cover.html",
+  "w": 1080,
+  "h": 1920
+ },
+ {
+  "id": "dabara-05-cold-menu",
+  "file": "dabara-05-cold-menu.html",
+  "w": 1080,
+  "h": 1350
+ },
+ {
+  "id": "barsaati-01-club",
+  "file": "barsaati-01-club.html",
+  "w": 1080,
+  "h": 1350
+ },
+ {
+  "id": "barsaati-02-july-book",
+  "file": "barsaati-02-july-book.html",
+  "w": 1080,
+  "h": 1350
+ },
+ {
+  "id": "barsaati-03-sunday-story",
+  "file": "barsaati-03-sunday-story.html",
+  "w": 1080,
+  "h": 1920
+ },
+ {
+  "id": "barsaati-04-quote",
+  "file": "barsaati-04-quote.html",
+  "w": 1080,
+  "h": 1080
+ },
+ {
+  "id": "dabba-01-poha",
+  "file": "dabba-01-poha.html",
+  "w": 1280,
+  "h": 720
+ },
+ {
+  "id": "dabba-02-tiffins",
+  "file": "dabba-02-tiffins.html",
+  "w": 1280,
+  "h": 720
+ },
+ {
+  "id": "dabba-03-banana-bread",
+  "file": "dabba-03-banana-bread.html",
+  "w": 1280,
+  "h": 720
+ }
+]
